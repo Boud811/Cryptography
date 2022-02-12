@@ -19,33 +19,38 @@ def MRTest(n, base =2, log =True):
     r=0 
     if n ==2 or n==3:
         return True
-    if n%2 == 0 or n%3 ==0:
+    if n&1==0 :
         return False
-    while d%2 == 0:
-        d = d//2
+    while d&1 == 0:
+        d //= 2
         r += 1
     # n = 2^(r) d + 1
     x = pow(base, d, n)
     if x !=  1:
         for i in range(1, r):
             if log:
-                print("x = ", x, "\nCalculating x^2: ", (x**2)%n)
+                print("x = ", x, "\nCalculating x^2: ", pow(x, 2, n))
             x = pow(x, 2, n)
         
-            if x== 1 or x==n-1:
+            if x==n-1:
+                if log: 
+                    print("Miller Rabin's test passed: ", True, "\nFor the number: ", n,"\nIn the base: ", base)
+                return True
 
-                continue
-            else:
-                if log:
-                    print("Miller Rabin's test passed: ", False, "\nFor the number: ", n,"\nIn the base: ", base, "\nFaliure at: 2^",i," * ", d )
-                return False
+            elif x==1: 
+                break
+            
+        if log:
+            print("Miller Rabin's test passed: ", False, "\nFor the number: ", n,"\nIn the base: ", base, "\nFaliure at: 2^",i," * ", d )
+        return False
+    
     if log: 
         print("Miller Rabin's test passed: ", True, "\nFor the number: ", n,"\nIn the base: ", base)
     return True
 
 def RepMRTest(n, k =10, log=True):
     witnesses =[]
-    for i in range(k):
+    for _ in range(k):
         base= rnd.randint(2,n-2)
         witnesses.append(base)
         if not MRTest(n, base, log):
